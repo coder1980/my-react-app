@@ -49,7 +49,7 @@ export const counterService = {
       const newCount = currentCount + 1
 
       // Update count in Supabase
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from('counter')
         .upsert([{ id: 1, count: newCount }])
         .select()
