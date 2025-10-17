@@ -22,7 +22,7 @@ function App() {
           Test
         </button>
         <QRCodeComponent 
-          url="https://v0-haloween-voting-raxhl4a3j-chetan-mehendi-6195s-projects.vercel.app"
+          url="https://v0-haloween-voting.vercel.app"
           title="Scan to visit this website"
         />
       </header>
