@@ -28,3 +28,20 @@
   background-color: #61dafb;
   color: #282c34;
 }
+
+.test-button {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  margin-top: 20px;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.test-button:hover {
+  background-color: #45a049;
+  transform: translateY(-2px);
+}
