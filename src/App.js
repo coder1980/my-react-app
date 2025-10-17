@@ -1,5 +1,6 @@
 import React from 'react';
 import './App.css';
+import QRCodeComponent from './QRCode';
 
 function App() {
   return (
@@ -20,6 +21,10 @@ function App() {
         <button className="test-button">
           Test
         </button>
+        <QRCodeComponent 
+          url="https://v0-haloween-voting-raxhl4a3j-chetan-mehendi-6195s-projects.vercel.app"
+          title="Scan to visit this website"
+        />
       </header>
     </div>
   );
