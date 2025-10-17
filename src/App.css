@@ -75,3 +75,29 @@
   color: #ccc;
   word-break: break-all;
 }
+
+.counter-section {
+  margin: 30px 0;
+  padding: 20px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  backdrop-filter: blur(10px);
+}
+
+.counter-section h2 {
+  margin: 0 0 20px 0;
+  font-size: 24px;
+  color: #61dafb;
+  text-shadow: 0 0 10px rgba(97, 218, 251, 0.3);
+}
+
+.test-button:disabled {
+  background-color: #666;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.test-button:disabled:hover {
+  background-color: #666;
+  transform: none;
+}
