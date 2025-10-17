@@ -1,26 +1,42 @@
-// Counter service using JSONBin (free database service)
-// This will persist data across sessions and devices
-export const counterService = {
-  // JSONBin configuration - you can get your own free account at jsonbin.io
-  binId: '6751a8e5e41b4d34e8b1a2c3', // Demo bin ID
-  apiKey: '$2a$10$demo-key-replace-with-your-own', // Demo API key
+import { createClient } from '@supabase/supabase-js'
 
+// Supabase configuration using CHETAN_ prefixed environment variables
+const supabaseUrl = process.env.REACT_APP_CHETAN_SUPABASE_URL || 'https://pqstodkgwmsuocslpily.supabase.co'
+const supabaseKey = process.env.REACT_APP_CHETAN_NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBxc3RvZGtnd21zdW9jc2xwaWx5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA3MTE3MDIsImV4cCI6MjA3NjI4NzcwMn0.9S3Szq_wh9J9VL9X2N46qgH-AAYafc68tsrSb72a_5Y'
+
+// Create Supabase client
+export const supabase = createClient(supabaseUrl, supabaseKey)
+
+// Counter service using Supabase
+export const counterService = {
   async getCount() {
     try {
-      const response = await fetch(`https://api.jsonbin.io/v3/b/${this.binId}/latest`, {
-        headers: {
-          'X-Master-Key': this.apiKey
-        }
-      })
-      
-      if (response.ok) {
-        const data = await response.json()
-        return data.record.count || 0
+      // Try to get count from Supabase
+      const { data, error } = await supabase
+        .from('counter')
+        .select('count')
+        .eq('id', 1)
+        .single()
+
+      if (error && error.code !== 'PGRST116') { // PGRST116 = no rows found
+        throw error
+      }
+
+      if (data) {
+        return data.count || 0
       } else {
-        throw new Error('Failed to fetch count')
+        // If no record exists, create one with count 0
+        const { data: newData, error: insertError } = await supabase
+          .from('counter')
+          .insert([{ id: 1, count: 0 }])
+          .select()
+          .single()
+
+        if (insertError) throw insertError
+        return newData.count
       }
     } catch (error) {
-      console.log('Using localStorage fallback:', error.message)
+      console.log('Supabase error, using localStorage fallback:', error.message)
       // Fallback to localStorage
       return parseInt(localStorage.getItem('testCount') || '0')
     }
@@ -28,28 +44,24 @@ export const counterService = {
 
   async incrementCount() {
     try {
+      // Get current count
       const currentCount = await this.getCount()
       const newCount = currentCount + 1
-      
-      // Try to save to JSONBin
-      const response = await fetch(`https://api.jsonbin.io/v3/b/${this.binId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Master-Key': this.apiKey
-        },
-        body: JSON.stringify({ count: newCount })
-      })
-      
-      if (response.ok) {
-        // Also save to localStorage as backup
-        localStorage.setItem('testCount', newCount.toString())
-        return newCount
-      } else {
-        throw new Error('Failed to save count')
-      }
+
+      // Update count in Supabase
+      const { data, error } = await supabase
+        .from('counter')
+        .upsert([{ id: 1, count: newCount }])
+        .select()
+        .single()
+
+      if (error) throw error
+
+      // Also save to localStorage as backup
+      localStorage.setItem('testCount', newCount.toString())
+      return newCount
     } catch (error) {
-      console.log('Using localStorage fallback:', error.message)
+      console.log('Supabase error, using localStorage fallback:', error.message)
       // Fallback to localStorage
       const currentCount = parseInt(localStorage.getItem('testCount') || '0')
       const newCount = currentCount + 1
