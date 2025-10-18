@@ -12,10 +12,10 @@ export const generateDeviceFingerprint = () => {
   // Collect device characteristics
   const fingerprint = {
     // Screen information
-    screenWidth: screen.width,
-    screenHeight: screen.height,
-    screenColorDepth: screen.colorDepth,
-    screenPixelDepth: screen.pixelDepth,
+    screenWidth: window.screen.width,
+    screenHeight: window.screen.height,
+    screenColorDepth: window.screen.colorDepth,
+    screenPixelDepth: window.screen.pixelDepth,
     
     // Browser information
     userAgent: navigator.userAgent,
