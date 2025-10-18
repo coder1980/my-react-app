@@ -85,6 +85,7 @@ function ResultsPage({ category }) {
     chart: {
       type: 'bar',
       backgroundColor: 'transparent',
+      height: 400, // Fixed height for 13-inch laptop
       style: {
         fontFamily: 'Arial, sans-serif'
       }
@@ -145,7 +146,10 @@ function ResultsPage({ category }) {
     plotOptions: {
       bar: {
         borderRadius: 5,
-        borderWidth: 0
+        borderWidth: 0,
+        maxPointWidth: 50, // Maximum width for each bar
+        pointPadding: 0.1,
+        groupPadding: 0.1
       }
     }
   };
