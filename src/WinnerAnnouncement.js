@@ -1,6 +1,6 @@
 import React from 'react';
 
-function WinnerAnnouncement({ winners, category }) {
+function WinnerAnnouncement({ winners, category, onClose }) {
   const getHalloweenGif = () => {
     const halloweenGifs = [
       'https://media.giphy.com/media/3o7btPCcdNniyf0ArS/giphy.gif', // Dancing skeleton
@@ -39,8 +39,20 @@ function WinnerAnnouncement({ winners, category }) {
             src={getHalloweenGif()} 
             alt="Halloween celebration"
             className="celebration-gif"
+            onError={(e) => {
+              e.target.style.display = 'none';
+              e.target.nextSibling.style.display = 'block';
+            }}
           />
+          <div className="gif-fallback" style={{display: 'none'}}>
+            <div className="halloween-emoji">🎃👻🦇🧙‍♀️🎭</div>
+            <p>Halloween Celebration!</p>
+          </div>
         </div>
+        
+        <button className="close-winner-button" onClick={onClose}>
+          ✕ Close
+        </button>
         
         <div className="confetti">
           <div className="confetti-piece"></div>

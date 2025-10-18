@@ -172,6 +172,7 @@ function ResultsPage({ category }) {
         <WinnerAnnouncement 
           winners={getWinners()} 
           category={categoryInfo?.title}
+          onClose={() => setShowWinner(false)}
         />
       )}
       
@@ -180,6 +181,15 @@ function ResultsPage({ category }) {
         <p>
           {categoryInfo?.description}
         </p>
+        
+        {!loading && allVotes.length > 0 && (
+          <div className="vote-progress-header">
+            <h3>Vote Progress: {currentVoteIndex} / {allVotes.length}</h3>
+            {currentVoteIndex < allVotes.length && (
+              <p className="counting-status">🎬 Counting votes...</p>
+            )}
+          </div>
+        )}
         
         <div className="results-section">
           {loading ? (
