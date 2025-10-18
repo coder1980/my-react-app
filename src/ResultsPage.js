@@ -11,11 +11,14 @@ function ResultsPage({ category }) {
   const [showWinner, setShowWinner] = useState(false);
   const [allVotes, setAllVotes] = useState([]);
   const [currentVoteIndex, setCurrentVoteIndex] = useState(0);
+  const [chartHeight, setChartHeight] = useState(600);
 
   const categoryInfo = votingConfig.categories.find(cat => cat.id === category);
 
   useEffect(() => {
     loadResults();
+    // Set chart height based on window size
+    setChartHeight(window.innerHeight - 50);
   }, [category]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const loadResults = async () => {
@@ -84,7 +87,7 @@ function ResultsPage({ category }) {
         chart: {
           type: 'bar',
           backgroundColor: 'transparent',
-          height: null, // Let it use full container height
+          height: chartHeight, // Use dynamic height based on window size
           style: {
             fontFamily: 'Arial, sans-serif'
           }
