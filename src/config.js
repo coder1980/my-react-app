@@ -3,11 +3,23 @@
 
 export const votingConfig = {
   candidates: [
-    "Alice Johnson",
-    "Bob Smith", 
-    "Charlie Brown",
-    "Diana Prince",
-    "Ethan Hunt"
+    "Chetan",
+    "Aditi",
+    "Anirudh",
+    "Anusha",
+    "Mohit",
+    "Medhavi",
+    "Shruti",
+    "Sanjay",
+    "Amit",
+    "Sushmita",
+    "Kripa",
+    "Tanu",
+    "Ritesh",
+    "Keyur",
+    "Neha",
+    "Subhash",
+    "Rupa"
   ],
   
   categories: [
