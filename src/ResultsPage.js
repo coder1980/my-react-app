@@ -103,9 +103,13 @@ function ResultsPage({ category }) {
       labels: {
         style: {
           color: '#61dafb'
+        },
+        formatter: function() {
+          return Math.round(this.value);
         }
       },
-      gridLineColor: 'rgba(97, 218, 251, 0.2)'
+      gridLineColor: 'rgba(97, 218, 251, 0.2)',
+      allowDecimals: false
     },
     series: [{
       name: 'Votes',
