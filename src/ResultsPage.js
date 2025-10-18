@@ -85,7 +85,7 @@ function ResultsPage({ category }) {
     chart: {
       type: 'bar',
       backgroundColor: 'transparent',
-      height: 400, // Fixed height for 13-inch laptop
+      height: 450, // Increased height to use more space
       style: {
         fontFamily: 'Arial, sans-serif'
       }
