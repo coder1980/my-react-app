@@ -7,38 +7,20 @@ const supabaseKey = process.env.REACT_APP_CHETAN_NEXT_PUBLIC_SUPABASE_ANON_KEY |
 // Create Supabase client
 export const supabase = createClient(supabaseUrl, supabaseKey)
 
-// Counter service using Supabase with device tracking
-export const counterService = {
-  async getCount() {
+// Voting service using Supabase with device tracking
+export const votingService = {
+  async getTotalVotes() {
     try {
-      // Try to get count from Supabase
-      const { data, error } = await supabase
-        .from('counter')
-        .select('count')
-        .eq('id', 1)
-        .single()
+      // Get total number of votes from device_clicks table
+      const { count, error } = await supabase
+        .from('device_clicks')
+        .select('*', { count: 'exact', head: true })
 
-      if (error && error.code !== 'PGRST116') { // PGRST116 = no rows found
-        throw error
-      }
-
-      if (data) {
-        return data.count || 0
-      } else {
-        // If no record exists, create one with count 0
-        const { data: newData, error: insertError } = await supabase
-          .from('counter')
-          .insert([{ id: 1, count: 0 }])
-          .select()
-          .single()
-
-        if (insertError) throw insertError
-        return newData.count
-      }
+      if (error) throw error
+      return count || 0
     } catch (error) {
-      console.log('Supabase error, using localStorage fallback:', error.message)
-      // Fallback to localStorage
-      return parseInt(localStorage.getItem('testCount') || '0')
+      console.log('Supabase error getting total votes:', error.message)
+      return 0
     }
   },
 
@@ -77,40 +59,27 @@ export const counterService = {
     }
   },
 
-  async recordDeviceClick(deviceId, deviceInfo) {
+  async recordVote(deviceId, votes, deviceInfo) {
     try {
-      // Record device click in database
+      // Record vote in database
       const { error } = await supabase
         .from('device_clicks')
         .insert([{
           device_id: deviceId,
           device_type: deviceInfo.deviceType,
           user_agent: deviceInfo.userAgent,
-          clicked_at: new Date().toISOString()
+          best_dressed: votes.best_dressed,
+          most_creative: votes.most_creative,
+          funniest: votes.funniest,
+          voted_at: new Date().toISOString()
         }])
 
       if (error) throw error
 
-      // Also increment the main counter
-      const currentCount = await this.getCount()
-      const newCount = currentCount + 1
-
-      const { error: counterError } = await supabase
-        .from('counter')
-        .upsert([{ id: 1, count: newCount }])
-        .select()
-        .single()
-
-      if (counterError) throw counterError
-
-      return newCount
+      return true
     } catch (error) {
-      console.log('Supabase error recording device click:', error.message)
-      // Fallback to localStorage
-      const currentCount = parseInt(localStorage.getItem('testCount') || '0')
-      const newCount = currentCount + 1
-      localStorage.setItem('testCount', newCount.toString())
-      return newCount
+      console.log('Supabase error recording vote:', error.message)
+      throw error
     }
   }
 }

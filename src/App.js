@@ -1,15 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import QRCodeComponent from './QRCode';
-import { counterService } from './supabase';
+import { votingService } from './supabase';
 import { getDeviceId, markDeviceAsClicked, getDeviceInfo } from './deviceFingerprint';
+import { votingConfig } from './config';
 
 function App() {
-  const [count, setCount] = useState(0);
-  const [deviceCount, setDeviceCount] = useState(0);
+  const [votes, setVotes] = useState({
+    best_dressed: '',
+    most_creative: '',
+    funniest: ''
+  });
+  const [totalVotes, setTotalVotes] = useState(0);
   const [loading, setLoading] = useState(false);
   const [deviceInfo, setDeviceInfo] = useState(null);
-  const [hasClicked, setHasClicked] = useState(false);
+  const [hasVoted, setHasVoted] = useState(false);
 
   // Load data when component mounts
   useEffect(() => {
@@ -18,26 +23,21 @@ function App() {
 
   const loadData = async () => {
     try {
-      // Load counts
-      const [currentCount, currentDeviceCount] = await Promise.all([
-        counterService.getCount(),
-        counterService.getDeviceCount()
-      ]);
-      
-      setCount(currentCount);
-      setDeviceCount(currentDeviceCount);
+      // Load total votes
+      const currentVotes = await votingService.getTotalVotes();
+      setTotalVotes(currentVotes);
       
       // Get device info
       const device = getDeviceInfo();
       setDeviceInfo(device);
-      setHasClicked(device.hasClicked);
+      setHasVoted(device.hasClicked); // Reuse the same localStorage key
       
-      // Check if device has already clicked in database
+      // Check if device has already voted in database
       const deviceId = getDeviceId();
-      const deviceExists = await counterService.checkDeviceExists(deviceId);
+      const deviceExists = await votingService.checkDeviceExists(deviceId);
       
       if (deviceExists) {
-        setHasClicked(true);
+        setHasVoted(true);
         markDeviceAsClicked();
       }
     } catch (error) {
@@ -45,9 +45,23 @@ function App() {
     }
   };
 
-  const handleTestClick = async () => {
-    if (hasClicked) {
-      alert('You have already clicked the button on this device!');
+  const handleVoteChange = (category, candidate) => {
+    setVotes(prev => ({
+      ...prev,
+      [category]: candidate
+    }));
+  };
+
+  const handleVote = async () => {
+    if (hasVoted) {
+      alert('You have already voted on this device!');
+      return;
+    }
+
+    // Check if all categories are selected
+    const allVoted = Object.values(votes).every(vote => vote !== '');
+    if (!allVoted) {
+      alert('Please select a candidate for all three categories before voting.');
       return;
     }
 
@@ -56,20 +70,19 @@ function App() {
       const deviceId = getDeviceId();
       const device = getDeviceInfo();
       
-      const newCount = await counterService.recordDeviceClick(deviceId, {
+      await votingService.recordVote(deviceId, votes, {
         deviceType: device.deviceType,
         userAgent: navigator.userAgent
       });
       
-      setCount(newCount);
-      setDeviceCount(deviceCount + 1);
-      setHasClicked(true);
+      setTotalVotes(totalVotes + 1);
+      setHasVoted(true);
       markDeviceAsClicked();
       
-      alert('Thank you! Your click has been recorded.');
+      alert('Thank you! Your votes have been recorded.');
     } catch (error) {
-      console.error('Error recording click:', error);
-      alert('Error recording your click. Please try again.');
+      console.error('Error recording vote:', error);
+      alert('Error recording your vote. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -78,50 +91,62 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <h1>Welcome to My React App!</h1>
+        <h1>🎃 Costume Contest Voting 🎃</h1>
         <p>
-          This is a modern React application created by coder1980.
+          Vote for your favorites in each category!
         </p>
         
-        <div className="counter-section">
-          <h2>Unique Devices: {deviceCount}</h2>
-          <h3>Total Clicks: {count}</h3>
+        <div className="voting-section">
+          <h2>Total Votes: {totalVotes}</h2>
           
           {deviceInfo && (
             <div className="device-info">
               <p>Your Device: {deviceInfo.deviceType}</p>
               <p>Device ID: {deviceInfo.deviceId}</p>
-              <p>Status: {hasClicked ? '✅ Already Clicked' : '🆕 New Device'}</p>
+              <p>Status: {hasVoted ? '✅ Already Voted' : '🆕 Ready to Vote'}</p>
             </div>
           )}
-          
-          <button 
-            className={`test-button ${hasClicked ? 'clicked' : ''}`}
-            onClick={handleTestClick}
-            disabled={loading || hasClicked}
-          >
-            {loading ? 'Saving...' : hasClicked ? 'Already Clicked' : 'Click Me!'}
-          </button>
-          
-          {hasClicked && (
-            <p className="clicked-message">
-              Thank you! You can only click once per device.
-            </p>
-          )}
-        </div>
 
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+          <div className="voting-form">
+            {votingConfig.categories.map(category => (
+              <div key={category.id} className="vote-category">
+                <h3>{category.title}</h3>
+                <p className="category-description">{category.description}</p>
+                <select
+                  value={votes[category.id]}
+                  onChange={(e) => handleVoteChange(category.id, e.target.value)}
+                  disabled={hasVoted}
+                  className="vote-dropdown"
+                >
+                  <option value="">Select a candidate...</option>
+                  {votingConfig.candidates.map(candidate => (
+                    <option key={candidate} value={candidate}>
+                      {candidate}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            ))}
+            
+            <button 
+              className={`vote-button ${hasVoted ? 'voted' : ''}`}
+              onClick={handleVote}
+              disabled={loading || hasVoted}
+            >
+              {loading ? 'Submitting...' : hasVoted ? 'Already Voted' : 'Submit Votes'}
+            </button>
+            
+            {hasVoted && (
+              <p className="voted-message">
+                Thank you! Your votes have been recorded. You can only vote once per device.
+              </p>
+            )}
+          </div>
+        </div>
         
         <QRCodeComponent 
           url="https://v0-haloween-voting.vercel.app"
-          title="Scan to visit this website"
+          title="Scan to vote in the costume contest"
         />
       </header>
     </div>

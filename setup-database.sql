@@ -8,13 +8,16 @@ CREATE TABLE IF NOT EXISTS counter (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- Create device_clicks table to track unique devices
+-- Create device_clicks table to track unique devices and votes
 CREATE TABLE IF NOT EXISTS device_clicks (
   id SERIAL PRIMARY KEY,
   device_id VARCHAR(255) UNIQUE NOT NULL,
   device_type VARCHAR(100),
   user_agent TEXT,
-  clicked_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+  best_dressed VARCHAR(255),
+  most_creative VARCHAR(255),
+  funniest VARCHAR(255),
+  voted_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
 -- Insert initial record if it doesn't exist
