@@ -14,7 +14,7 @@ function ResultsPage({ category }) {
 
   useEffect(() => {
     loadResults();
-  }, [category]);
+  }, [category]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const loadResults = async () => {
     try {
