@@ -95,7 +95,7 @@ function ResultsPage({ category }) {
     xAxis: {
       categories: sortedResults.map(([candidate]) => candidate),
       title: {
-        text: 'Candidates',
+        text: 'Contestants',
         style: {
           color: '#61dafb'
         }
@@ -111,7 +111,7 @@ function ResultsPage({ category }) {
     },
     yAxis: {
       title: {
-        text: 'Contestants',
+        text: 'Votes',
         style: {
           color: '#61dafb'
         }
