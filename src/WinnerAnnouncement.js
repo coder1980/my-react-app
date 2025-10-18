@@ -1,23 +1,38 @@
 import React from 'react';
 
-function WinnerAnnouncement({ winner, category }) {
+function WinnerAnnouncement({ winners, category }) {
   const getHalloweenGif = () => {
-    const gifs = [
+    const halloweenGifs = [
       'https://media.giphy.com/media/3o7btPCcdNniyf0ArS/giphy.gif', // Dancing skeleton
       'https://media.giphy.com/media/26BRrSvJUa5yrsYms/giphy.gif', // Happy ghost
       'https://media.giphy.com/media/3o7aTskHEUdgCQAXde/giphy.gif', // Spooky celebration
       'https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif', // Halloween party
-      'https://media.giphy.com/media/26BRv0ZflZliWj1Zm/giphy.gif'  // Witch celebration
+      'https://media.giphy.com/media/26BRv0ZflZliWj1Zm/giphy.gif', // Witch celebration
+      'https://media.giphy.com/media/3o7aTskHEUdgCQAXde/giphy.gif', // Pumpkin celebration
+      'https://media.giphy.com/media/3o7btPCcdNniyf0ArS/giphy.gif', // Monster dance
+      'https://media.giphy.com/media/26BRrSvJUa5yrsYms/giphy.gif'  // Spooky ghost
     ];
-    return gifs[Math.floor(Math.random() * gifs.length)];
+    return halloweenGifs[Math.floor(Math.random() * halloweenGifs.length)];
   };
 
+  const isTie = winners.length > 1;
+  
   return (
     <div className="winner-announcement">
       <div className="winner-content">
-        <h1 className="winner-title">🎉 WINNER! 🎉</h1>
-        <h2 className="winner-name">{winner}</h2>
-        <p className="winner-category">Wins {category}!</p>
+        <h1 className="winner-title">
+          {isTie ? "🎉 TIE! 🎉" : "🎉 WINNER! 🎉"}
+        </h1>
+        <div className="winner-names">
+          {winners.map((winner, index) => (
+            <h2 key={index} className="winner-name">
+              {winner}
+            </h2>
+          ))}
+        </div>
+        <p className="winner-category">
+          {isTie ? `Tie for ${category}!` : `Wins ${category}!`}
+        </p>
         
         <div className="winner-gif">
           <img 

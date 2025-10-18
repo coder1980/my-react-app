@@ -157,48 +157,20 @@ function ResultsPage({ category }) {
     }
   };
 
-  const getWinner = () => {
-    if (sortedResults.length === 0) return null;
+  const getWinners = () => {
+    if (sortedResults.length === 0) return [];
     
     const maxVotes = sortedResults[0][1];
-    const tiedCandidates = sortedResults.filter(([, votes]) => votes === maxVotes);
+    const winners = sortedResults.filter(([, votes]) => votes === maxVotes);
     
-    // If there's only one winner, return them
-    if (tiedCandidates.length === 1) {
-      return tiedCandidates[0][0];
-    }
-    
-    // For ties, find who got their first vote earliest
-    const candidateFirstVotes = {};
-    
-    allVotes.forEach((vote, index) => {
-      const candidate = vote[category];
-      if (candidate && tiedCandidates.some(([name]) => name === candidate)) {
-        if (!candidateFirstVotes[candidate]) {
-          candidateFirstVotes[candidate] = index; // Store the vote index (earlier = smaller number)
-        }
-      }
-    });
-    
-    // Find the candidate with the earliest first vote
-    let earliestWinner = null;
-    let earliestIndex = Infinity;
-    
-    tiedCandidates.forEach(([candidate]) => {
-      if (candidateFirstVotes[candidate] < earliestIndex) {
-        earliestIndex = candidateFirstVotes[candidate];
-        earliestWinner = candidate;
-      }
-    });
-    
-    return earliestWinner;
+    return winners.map(([candidate]) => candidate);
   };
 
   return (
     <div className="App">
-      {showWinner && getWinner() && (
+      {showWinner && getWinners().length > 0 && (
         <WinnerAnnouncement 
-          winner={getWinner()} 
+          winners={getWinners()} 
           category={categoryInfo?.title}
         />
       )}
