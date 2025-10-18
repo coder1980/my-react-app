@@ -17,8 +17,14 @@ function WinnerAnnouncement({ winners, category, onClose }) {
 
   const isTie = winners.length > 1;
   
+  const handleBackdropClick = (e) => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
+
   return (
-    <div className="winner-announcement">
+    <div className="winner-announcement" onClick={handleBackdropClick}>
       <div className="winner-content">
         <h1 className="winner-title">
           {isTie ? "🎉 TIE! 🎉" : "🎉 WINNER! 🎉"}
@@ -50,9 +56,6 @@ function WinnerAnnouncement({ winners, category, onClose }) {
           </div>
         </div>
         
-        <button className="close-winner-button" onClick={onClose}>
-          ✕ Close
-        </button>
         
         <div className="confetti">
           <div className="confetti-piece"></div>

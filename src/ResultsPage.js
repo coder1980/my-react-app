@@ -62,10 +62,10 @@ function ResultsPage({ category }) {
       
       setCurrentVoteIndex(index + 1);
       
-      // Wait 5 seconds before processing next vote
-      setTimeout(() => {
-        processVote(index + 1);
-      }, 5000);
+          // Wait 3 seconds before processing next vote
+          setTimeout(() => {
+            processVote(index + 1);
+          }, 3000);
     };
 
     processVote(0);
@@ -111,7 +111,7 @@ function ResultsPage({ category }) {
     },
     yAxis: {
       title: {
-        text: 'Votes',
+        text: 'Contestants',
         style: {
           color: '#61dafb'
         }
@@ -177,27 +177,6 @@ function ResultsPage({ category }) {
       
       <header className="App-header">
         <h1>🏆 {categoryInfo?.title} Results</h1>
-        
-        {!loading && allVotes.length > 0 && (
-          <div className="vote-progress-header">
-            <div className="progress-bar-container">
-              <div className="progress-bar">
-                <div 
-                  className="progress-fill"
-                  style={{
-                    width: `${(currentVoteIndex / allVotes.length) * 100}%`
-                  }}
-                ></div>
-              </div>
-              <div className="progress-text">
-                {currentVoteIndex} / {allVotes.length} votes
-                {currentVoteIndex < allVotes.length && (
-                  <span className="counting-status"> 🎬 Counting...</span>
-                )}
-              </div>
-            </div>
-          </div>
-        )}
         
         <div className="results-section">
           {loading ? (
