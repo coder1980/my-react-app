@@ -10,7 +10,9 @@ function WinnerAnnouncement({ winners, category, onClose }) {
       'https://media.giphy.com/media/26BRv0ZflZliWj1Zm/giphy.gif', // Witch celebration
       'https://media.giphy.com/media/3o7aTskHEUdgCQAXde/giphy.gif', // Pumpkin celebration
       'https://media.giphy.com/media/3o7btPCcdNniyf0ArS/giphy.gif', // Monster dance
-      'https://media.giphy.com/media/26BRrSvJUa5yrsYms/giphy.gif'  // Spooky ghost
+      'https://media.giphy.com/media/26BRrSvJUa5yrsYms/giphy.gif', // Spooky ghost
+      'https://media.giphy.com/media/3o7aTskHEUdgCQAXde/giphy.gif', // Halloween dance
+      'https://media.giphy.com/media/26BRrSvJUa5yrsYms/giphy.gif'  // Ghost party
     ];
     return halloweenGifs[Math.floor(Math.random() * halloweenGifs.length)];
   };
@@ -40,21 +42,25 @@ function WinnerAnnouncement({ winners, category, onClose }) {
           {isTie ? `Tie for ${category}!` : `Wins ${category}!`}
         </p>
         
-        <div className="winner-gif">
-          <img 
-            src={getHalloweenGif()} 
-            alt="Halloween celebration"
-            className="celebration-gif"
-            onError={(e) => {
-              e.target.style.display = 'none';
-              e.target.nextSibling.style.display = 'block';
-            }}
-          />
-          <div className="gif-fallback" style={{display: 'none'}}>
-            <div className="halloween-emoji">🎃👻🦇🧙‍♀️🎭</div>
-            <p>Halloween Celebration!</p>
-          </div>
-        </div>
+            <div className="winner-gif">
+              <img
+                src={getHalloweenGif()}
+                alt="Halloween celebration"
+                className="celebration-gif"
+                onError={(e) => {
+                  e.target.style.display = 'none';
+                  e.target.nextSibling.style.display = 'block';
+                }}
+                onLoad={(e) => {
+                  // Hide fallback if GIF loads successfully
+                  e.target.nextSibling.style.display = 'none';
+                }}
+              />
+              <div className="gif-fallback">
+                <div className="halloween-emoji">🎃👻🦇🧙‍♀️🎭</div>
+                <p>Halloween Celebration!</p>
+              </div>
+            </div>
         
         
         <div className="confetti">

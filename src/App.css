@@ -422,6 +422,9 @@
 .gif-fallback {
   padding: 20px;
   text-align: center;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  border: 2px solid #ffd700;
 }
 
 .halloween-emoji {
