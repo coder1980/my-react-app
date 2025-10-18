@@ -178,9 +178,6 @@ function ResultsPage({ category }) {
       
       <header className="App-header">
         <h1>🏆 {categoryInfo?.title} Results</h1>
-        <p>
-          {categoryInfo?.description}
-        </p>
         
         {!loading && allVotes.length > 0 && (
           <div className="vote-progress-header">
