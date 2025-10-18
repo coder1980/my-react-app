@@ -233,9 +233,9 @@
   background-color: rgba(255, 255, 255, 0.1);
   border-radius: 10px;
   backdrop-filter: blur(10px);
-  height: 550px; /* Increased height for 13-inch laptop */
+  height: 600px; /* Even bigger height for maximum chart space */
   width: 100%;
-  max-width: 900px; /* Increased width to accommodate wider chart */
+  max-width: 950px; /* Even bigger width for wider chart */
   overflow: hidden;
 }
 
@@ -250,9 +250,9 @@
   border-radius: 10px;
   padding: 10px;
   border: 1px solid rgba(97, 218, 251, 0.3);
-  height: 480px; /* Increased height to use more space */
+  height: 530px; /* Even bigger height for maximum chart visibility */
   width: 100%;
-  max-width: 800px; /* Increased max width for better chart visibility */
+  max-width: 850px; /* Even bigger max width for better chart visibility */
   overflow: hidden;
 }
 

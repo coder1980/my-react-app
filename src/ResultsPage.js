@@ -81,14 +81,14 @@ function ResultsPage({ category }) {
 
   // Highcharts configuration
   const chartOptions = {
-    chart: {
-      type: 'bar',
-      backgroundColor: 'transparent',
-      height: 450, // Increased height to use more space
-      style: {
-        fontFamily: 'Arial, sans-serif'
-      }
-    },
+        chart: {
+          type: 'bar',
+          backgroundColor: 'transparent',
+          height: 500, // Even bigger chart for maximum visibility
+          style: {
+            fontFamily: 'Arial, sans-serif'
+          }
+        },
     title: {
       text: null
     },
@@ -227,11 +227,6 @@ function ResultsPage({ category }) {
           )}
         </div>
         
-        <div className="navigation-links">
-          <button onClick={loadResults} className="nav-link refresh-button">
-            🔄 Refresh Results
-          </button>
-        </div>
       </header>
     </div>
   );
