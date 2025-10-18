@@ -6,7 +6,7 @@
 
 .App-header {
   background-color: #282c34;
-  padding: 2px; /* Ultra minimal padding for maximum chart space */
+  padding: 0; /* No padding for maximum chart space */
   color: white;
   height: 100vh;
   display: flex;
@@ -19,8 +19,8 @@
 }
 
 .App-header h1 {
-  font-size: 1.2rem !important; /* Smaller title for more chart space */
-  margin: 2px 0 !important; /* Minimal margin */
+  font-size: 1rem !important; /* Even smaller title for maximum chart space */
+  margin: 1px 0 !important; /* Ultra minimal margin */
 }
 
 .App-header p {
@@ -228,12 +228,12 @@
 }
 
 .results-section {
-  margin: 2px 0;
-  padding: 2px;
+  margin: 0;
+  padding: 0;
   background-color: rgba(255, 255, 255, 0.1);
   border-radius: 10px;
   backdrop-filter: blur(10px);
-  height: calc(100vh - 60px); /* Use almost full screen height minus minimal header */
+  height: calc(100vh - 50px); /* Use almost full screen height minus just the title */
   width: 100%;
   max-width: 100%; /* Full width */
   overflow: hidden;
@@ -245,12 +245,12 @@
 }
 
 .chart-container {
-  margin: 2px 0;
+  margin: 0;
   background-color: rgba(255, 255, 255, 0.05);
   border-radius: 10px;
-  padding: 2px;
+  padding: 0;
   border: 1px solid rgba(97, 218, 251, 0.3);
-  height: calc(100vh - 80px); /* Use almost full screen height minus minimal header and padding */
+  height: calc(100vh - 50px); /* Use almost full screen height minus just the title */
   width: 100%;
   max-width: 100%; /* Full width */
   overflow: hidden;
