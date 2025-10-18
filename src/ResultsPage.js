@@ -17,8 +17,8 @@ function ResultsPage({ category }) {
 
   useEffect(() => {
     loadResults();
-    // Set chart height based on window size
-    setChartHeight(window.innerHeight - 50);
+    // Set chart height based on window size, accounting for title and progress bar
+    setChartHeight(window.innerHeight - 100);
   }, [category]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const loadResults = async () => {
@@ -180,6 +180,27 @@ function ResultsPage({ category }) {
       
       <header className="App-header">
         <h1>🏆 {categoryInfo?.title} Results</h1>
+        
+        {!loading && allVotes.length > 0 && (
+          <div className="vote-progress-header">
+            <div className="progress-bar-container">
+              <div className="progress-bar">
+                <div
+                  className="progress-fill"
+                  style={{
+                    width: `${(currentVoteIndex / allVotes.length) * 100}%`
+                  }}
+                ></div>
+              </div>
+              <div className="progress-text">
+                {currentVoteIndex} / {allVotes.length} votes
+                {currentVoteIndex < allVotes.length && (
+                  <span className="counting-status"> 🎬 Counting...</span>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
         
         <div className="results-section">
           {loading ? (

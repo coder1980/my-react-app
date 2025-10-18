@@ -264,8 +264,8 @@
 }
 
 .vote-progress-header {
-  margin: 8px 0;
-  padding: 8px;
+  margin: 2px 0;
+  padding: 4px;
   background-color: rgba(97, 218, 251, 0.2);
   border: 1px solid #61dafb;
   border-radius: 5px;
@@ -280,18 +280,18 @@
 
 .progress-bar {
   width: 100%;
-  height: 12px;
+  height: 8px;
   background-color: rgba(255, 255, 255, 0.2);
-  border-radius: 6px;
+  border-radius: 4px;
   overflow: hidden;
-  margin-bottom: 5px;
+  margin-bottom: 3px;
   border: 1px solid rgba(97, 218, 251, 0.5);
 }
 
 .progress-fill {
   height: 100%;
   background: linear-gradient(90deg, #61dafb, #4CAF50);
-  border-radius: 6px;
+  border-radius: 4px;
   transition: width 0.5s ease-in-out;
   position: relative;
 }
@@ -314,13 +314,13 @@
 
 .progress-text {
   color: #61dafb;
-  font-size: 12px;
+  font-size: 10px;
   font-weight: bold;
 }
 
 .counting-status {
   color: #ffc107;
-  font-size: 11px;
+  font-size: 9px;
   font-weight: bold;
 }
 
