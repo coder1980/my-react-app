@@ -184,10 +184,22 @@ function ResultsPage({ category }) {
         
         {!loading && allVotes.length > 0 && (
           <div className="vote-progress-header">
-            <h3>Vote Progress: {currentVoteIndex} / {allVotes.length}</h3>
-            {currentVoteIndex < allVotes.length && (
-              <p className="counting-status">🎬 Counting votes...</p>
-            )}
+            <div className="progress-bar-container">
+              <div className="progress-bar">
+                <div 
+                  className="progress-fill"
+                  style={{
+                    width: `${(currentVoteIndex / allVotes.length) * 100}%`
+                  }}
+                ></div>
+              </div>
+              <div className="progress-text">
+                {currentVoteIndex} / {allVotes.length} votes
+                {currentVoteIndex < allVotes.length && (
+                  <span className="counting-status"> 🎬 Counting...</span>
+                )}
+              </div>
+            </div>
           </div>
         )}
         
