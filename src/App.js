@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './App.css';
 import QRCodeComponent from './QRCode';
 import { counterService } from './supabase';
-import { getDeviceId, hasDeviceClicked, markDeviceAsClicked, getDeviceInfo } from './deviceFingerprint';
+import { getDeviceId, markDeviceAsClicked, getDeviceInfo } from './deviceFingerprint';
 
 function App() {
   const [count, setCount] = useState(0);
