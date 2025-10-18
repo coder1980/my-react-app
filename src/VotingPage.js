@@ -155,6 +155,15 @@ function VotingPage() {
           <Link to="/barcode" className="nav-link">
             📱 Get QR Code
           </Link>
+          <Link to="/bestdressed" className="nav-link">
+            👗 Best Dressed Results
+          </Link>
+          <Link to="/mostcreative" className="nav-link">
+            🎨 Most Creative Results
+          </Link>
+          <Link to="/funniest" className="nav-link">
+            😂 Funniest Results
+          </Link>
         </div>
       </header>
     </div>

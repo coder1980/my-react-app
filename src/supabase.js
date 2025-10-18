@@ -81,5 +81,22 @@ export const votingService = {
       console.log('Supabase error recording vote:', error.message)
       throw error
     }
+  },
+
+  async getVotingResults() {
+    try {
+      // Get all votes from database
+      const { data, error } = await supabase
+        .from('device_clicks')
+        .select('best_dressed, most_creative, funniest, voted_at')
+        .order('voted_at', { ascending: true })
+
+      if (error) throw error
+
+      return data || []
+    } catch (error) {
+      console.log('Supabase error getting voting results:', error.message)
+      return []
+    }
   }
 }
