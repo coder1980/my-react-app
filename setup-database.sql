@@ -1,4 +1,4 @@
--- Setup script for Supabase database
+-- Setup script for Supabase database with device tracking
 -- Run this in your Supabase SQL Editor
 
 -- Create counter table
@@ -8,16 +8,29 @@ CREATE TABLE IF NOT EXISTS counter (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+-- Create device_clicks table to track unique devices
+CREATE TABLE IF NOT EXISTS device_clicks (
+  id SERIAL PRIMARY KEY,
+  device_id VARCHAR(255) UNIQUE NOT NULL,
+  device_type VARCHAR(100),
+  user_agent TEXT,
+  clicked_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
 -- Insert initial record if it doesn't exist
 INSERT INTO counter (id, count) VALUES (1, 0) ON CONFLICT (id) DO NOTHING;
 
 -- Enable Row Level Security (RLS)
 ALTER TABLE counter ENABLE ROW LEVEL SECURITY;
+ALTER TABLE device_clicks ENABLE ROW LEVEL SECURITY;
 
--- Create policy to allow public read/write (for demo purposes)
--- This allows anyone to read and write to the counter table
+-- Create policies to allow public read/write (for demo purposes)
+-- This allows anyone to read and write to both tables
 DROP POLICY IF EXISTS "Allow public access" ON counter;
 CREATE POLICY "Allow public access" ON counter FOR ALL USING (true);
+
+DROP POLICY IF EXISTS "Allow public access" ON device_clicks;
+CREATE POLICY "Allow public access" ON device_clicks FOR ALL USING (true);
 
 -- Create a function to automatically update the updated_at timestamp
 CREATE OR REPLACE FUNCTION update_updated_at_column()

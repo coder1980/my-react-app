@@ -101,3 +101,38 @@
   background-color: #666;
   transform: none;
 }
+
+.test-button.clicked {
+  background-color: #ff6b6b;
+  cursor: not-allowed;
+}
+
+.test-button.clicked:hover {
+  background-color: #ff5252;
+  transform: none;
+}
+
+.device-info {
+  margin: 15px 0;
+  padding: 15px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  border: 1px solid rgba(97, 218, 251, 0.3);
+}
+
+.device-info p {
+  margin: 5px 0;
+  font-size: 14px;
+  color: #ccc;
+}
+
+.clicked-message {
+  margin-top: 15px;
+  padding: 10px;
+  background-color: rgba(76, 175, 80, 0.2);
+  border: 1px solid rgba(76, 175, 80, 0.5);
+  border-radius: 5px;
+  color: #4CAF50;
+  font-size: 14px;
+  text-align: center;
+}
