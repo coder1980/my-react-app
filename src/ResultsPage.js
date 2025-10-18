@@ -103,8 +103,11 @@ function ResultsPage({ category }) {
       },
       labels: {
         style: {
-          color: '#61dafb'
-        }
+          color: '#61dafb',
+          fontSize: '12px'
+        },
+        rotation: -45, // Rotate labels for better readability
+        align: 'right'
       }
     },
     yAxis: {
@@ -147,8 +150,8 @@ function ResultsPage({ category }) {
       bar: {
         borderRadius: 5,
         borderWidth: 0,
-        maxPointWidth: 50, // Maximum width for each bar
-        pointPadding: 0.1,
+        maxPointWidth: 80, // Increased width for better visibility
+        pointPadding: 0.2,
         groupPadding: 0.1
       }
     }

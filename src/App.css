@@ -224,6 +224,8 @@
   border-radius: 10px;
   backdrop-filter: blur(10px);
   height: 500px; /* Fixed height for 13-inch laptop */
+  width: 100%;
+  max-width: 900px; /* Increased width to accommodate wider chart */
   overflow: hidden;
 }
 
@@ -239,6 +241,8 @@
   padding: 15px;
   border: 1px solid rgba(97, 218, 251, 0.3);
   height: 420px; /* Fixed height to fit in results-section */
+  width: 100%;
+  max-width: 800px; /* Increased max width for better chart visibility */
   overflow: hidden;
 }
 
