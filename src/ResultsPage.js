@@ -4,10 +4,14 @@ import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 import { votingService } from './supabase';
 import { votingConfig } from './config';
+import WinnerAnnouncement from './WinnerAnnouncement';
 
 function ResultsPage({ category }) {
   const [results, setResults] = useState({});
   const [loading, setLoading] = useState(true);
+  const [showWinner, setShowWinner] = useState(false);
+  const [allVotes, setAllVotes] = useState([]);
+  const [currentVoteIndex, setCurrentVoteIndex] = useState(0);
 
   const categoryInfo = votingConfig.categories.find(cat => cat.id === category);
 
@@ -18,8 +22,11 @@ function ResultsPage({ category }) {
   const loadResults = async () => {
     try {
       setLoading(true);
+      setShowWinner(false);
       const votes = await votingService.getVotingResults();
+      setAllVotes(votes);
       setResults({});
+      setCurrentVoteIndex(0);
       
       if (votes.length > 0) {
         startAnimation(votes);
@@ -37,6 +44,10 @@ function ResultsPage({ category }) {
     
     const processVote = (index) => {
       if (index >= votes.length) {
+        // All votes processed, show winner after a delay
+        setTimeout(() => {
+          setShowWinner(true);
+        }, 2000);
         return;
       }
 
@@ -49,6 +60,8 @@ function ResultsPage({ category }) {
           [candidate]: (prev[candidate] || 0) + 1
         }));
       }
+      
+      setCurrentVoteIndex(index + 1);
       
       // Wait 5 seconds before processing next vote
       setTimeout(() => {
@@ -137,8 +150,52 @@ function ResultsPage({ category }) {
     }
   };
 
+  const getWinner = () => {
+    if (sortedResults.length === 0) return null;
+    
+    const maxVotes = sortedResults[0][1];
+    const tiedCandidates = sortedResults.filter(([, votes]) => votes === maxVotes);
+    
+    // If there's only one winner, return them
+    if (tiedCandidates.length === 1) {
+      return tiedCandidates[0][0];
+    }
+    
+    // For ties, find who got their first vote earliest
+    const candidateFirstVotes = {};
+    
+    allVotes.forEach((vote, index) => {
+      const candidate = vote[category];
+      if (candidate && tiedCandidates.some(([name]) => name === candidate)) {
+        if (!candidateFirstVotes[candidate]) {
+          candidateFirstVotes[candidate] = index; // Store the vote index (earlier = smaller number)
+        }
+      }
+    });
+    
+    // Find the candidate with the earliest first vote
+    let earliestWinner = null;
+    let earliestIndex = Infinity;
+    
+    tiedCandidates.forEach(([candidate]) => {
+      if (candidateFirstVotes[candidate] < earliestIndex) {
+        earliestIndex = candidateFirstVotes[candidate];
+        earliestWinner = candidate;
+      }
+    });
+    
+    return earliestWinner;
+  };
+
   return (
     <div className="App">
+      {showWinner && getWinner() && (
+        <WinnerAnnouncement 
+          winner={getWinner()} 
+          category={categoryInfo?.title}
+        />
+      )}
+      
       <header className="App-header">
         <h1>🏆 {categoryInfo?.title} Results</h1>
         <p>
@@ -157,10 +214,17 @@ function ResultsPage({ category }) {
                   <p>No votes yet for this category</p>
                 </div>
               ) : (
-                <HighchartsReact
-                  highcharts={Highcharts}
-                  options={chartOptions}
-                />
+                <>
+                  <HighchartsReact
+                    highcharts={Highcharts}
+                    options={chartOptions}
+                  />
+                  {currentVoteIndex < allVotes.length && (
+                    <p className="vote-progress">
+                      Processing vote {currentVoteIndex} of {allVotes.length}...
+                    </p>
+                  )}
+                </>
               )}
             </div>
           )}
