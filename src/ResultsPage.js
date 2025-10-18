@@ -229,12 +229,6 @@ function ResultsPage({ category }) {
         </div>
         
         <div className="navigation-links">
-          <Link to="/" className="nav-link">
-            🏠 Back to Voting
-          </Link>
-          <Link to="/barcode" className="nav-link">
-            📱 QR Code
-          </Link>
           <button onClick={loadResults} className="nav-link refresh-button">
             🔄 Refresh Results
           </button>
