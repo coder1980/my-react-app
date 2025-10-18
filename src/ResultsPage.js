@@ -8,9 +8,6 @@ import { votingConfig } from './config';
 function ResultsPage({ category }) {
   const [results, setResults] = useState({});
   const [loading, setLoading] = useState(true);
-  const [currentVoteIndex, setCurrentVoteIndex] = useState(0);
-  const [allVotes, setAllVotes] = useState([]);
-  const [isAnimating, setIsAnimating] = useState(false);
 
   const categoryInfo = votingConfig.categories.find(cat => cat.id === category);
 
@@ -22,8 +19,6 @@ function ResultsPage({ category }) {
     try {
       setLoading(true);
       const votes = await votingService.getVotingResults();
-      setAllVotes(votes);
-      setCurrentVoteIndex(0);
       setResults({});
       
       if (votes.length > 0) {
@@ -38,12 +33,10 @@ function ResultsPage({ category }) {
   };
 
   const startAnimation = (votes) => {
-    setIsAnimating(true);
     setLoading(false);
     
     const processVote = (index) => {
       if (index >= votes.length) {
-        setIsAnimating(false);
         return;
       }
 
@@ -56,8 +49,6 @@ function ResultsPage({ category }) {
           [candidate]: (prev[candidate] || 0) + 1
         }));
       }
-
-      setCurrentVoteIndex(index + 1);
       
       // Wait 5 seconds before processing next vote
       setTimeout(() => {
