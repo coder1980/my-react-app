@@ -3,16 +3,9 @@ import React from 'react';
 function WinnerAnnouncement({ winners, category, onClose }) {
   const getHalloweenGif = () => {
     const halloweenGifs = [
-      'https://media.giphy.com/media/3o7btPCcdNniyf0ArS/giphy.gif', // Dancing skeleton
-      'https://media.giphy.com/media/26BRrSvJUa5yrsYms/giphy.gif', // Happy ghost
-      'https://media.giphy.com/media/3o7aTskHEUdgCQAXde/giphy.gif', // Spooky celebration
-      'https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif', // Halloween party
-      'https://media.giphy.com/media/26BRv0ZflZliWj1Zm/giphy.gif', // Witch celebration
-      'https://media.giphy.com/media/3o7aTskHEUdgCQAXde/giphy.gif', // Pumpkin celebration
-      'https://media.giphy.com/media/3o7btPCcdNniyf0ArS/giphy.gif', // Monster dance
-      'https://media.giphy.com/media/26BRrSvJUa5yrsYms/giphy.gif', // Spooky ghost
-      'https://media.giphy.com/media/3o7aTskHEUdgCQAXde/giphy.gif', // Halloween dance
-      'https://media.giphy.com/media/26BRrSvJUa5yrsYms/giphy.gif'  // Ghost party
+      '/gifs/halloween-celebration-1.gif', // Dancing skeleton
+      '/gifs/halloween-celebration-2.gif', // Happy ghost
+      '/gifs/halloween-celebration-3.gif'  // Spooky celebration
     ];
     return halloweenGifs[Math.floor(Math.random() * halloweenGifs.length)];
   };
@@ -51,12 +44,8 @@ function WinnerAnnouncement({ winners, category, onClose }) {
                   e.target.style.display = 'none';
                   e.target.nextSibling.style.display = 'block';
                 }}
-                onLoad={(e) => {
-                  // Hide fallback if GIF loads successfully
-                  e.target.nextSibling.style.display = 'none';
-                }}
               />
-              <div className="gif-fallback">
+              <div className="gif-fallback" style={{display: 'none'}}>
                 <div className="halloween-emoji">🎃👻🦇🧙‍♀️🎭</div>
                 <p>Halloween Celebration!</p>
               </div>
