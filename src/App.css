@@ -6,7 +6,7 @@
 
 .App-header {
   background-color: #282c34;
-  padding: 10px;
+  padding: 5px; /* Minimal padding for maximum chart space */
   color: white;
   height: 100vh;
   display: flex;
@@ -228,14 +228,14 @@
 }
 
 .results-section {
-  margin: 10px 0;
-  padding: 10px;
+  margin: 5px 0;
+  padding: 5px;
   background-color: rgba(255, 255, 255, 0.1);
   border-radius: 10px;
   backdrop-filter: blur(10px);
-  height: 600px; /* Even bigger height for maximum chart space */
+  height: calc(100vh - 120px); /* Use almost full screen height minus header */
   width: 100%;
-  max-width: 950px; /* Even bigger width for wider chart */
+  max-width: 100%; /* Full width */
   overflow: hidden;
 }
 
@@ -248,11 +248,11 @@
   margin: 5px 0;
   background-color: rgba(255, 255, 255, 0.05);
   border-radius: 10px;
-  padding: 10px;
+  padding: 5px;
   border: 1px solid rgba(97, 218, 251, 0.3);
-  height: 530px; /* Even bigger height for maximum chart visibility */
+  height: calc(100vh - 150px); /* Use almost full screen height minus header and padding */
   width: 100%;
-  max-width: 850px; /* Even bigger max width for better chart visibility */
+  max-width: 100%; /* Full width */
   overflow: hidden;
 }
 

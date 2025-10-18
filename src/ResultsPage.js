@@ -84,7 +84,7 @@ function ResultsPage({ category }) {
         chart: {
           type: 'bar',
           backgroundColor: 'transparent',
-          height: 500, // Even bigger chart for maximum visibility
+          height: null, // Let it use full container height
           style: {
             fontFamily: 'Arial, sans-serif'
           }
