@@ -233,7 +233,7 @@
   background-color: rgba(255, 255, 255, 0.1);
   border-radius: 10px;
   backdrop-filter: blur(10px);
-  height: calc(100vh - 50px); /* Use almost full screen height minus just the title */
+  height: calc(100vh - 30px); /* Use almost full screen height minus minimal title space */
   width: 100%;
   max-width: 100%; /* Full width */
   overflow: hidden;
@@ -250,7 +250,7 @@
   border-radius: 10px;
   padding: 0;
   border: 1px solid rgba(97, 218, 251, 0.3);
-  height: calc(100vh - 50px); /* Use almost full screen height minus just the title */
+  height: 100%; /* Use full height of parent container */
   width: 100%;
   max-width: 100%; /* Full width */
   overflow: hidden;
