@@ -227,73 +227,12 @@
   padding: 40px;
 }
 
-.results-header {
-  margin-bottom: 20px;
-  text-align: center;
-}
-
-.results-header h2 {
-  margin: 0 0 10px 0;
-  font-size: 24px;
-  color: #61dafb;
-}
-
-.animation-status {
-  margin: 0;
-  font-size: 16px;
-  color: #ffc107;
-  font-weight: bold;
-}
-
-.bar-chart {
+.chart-container {
   margin: 20px 0;
-}
-
-.bar-item {
-  margin: 15px 0;
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-.candidate-name {
-  min-width: 150px;
-  font-size: 16px;
-  font-weight: bold;
-  color: #61dafb;
-  text-align: right;
-}
-
-.bar-container {
-  flex: 1;
-  height: 40px;
-  background-color: rgba(255, 255, 255, 0.1);
-  border-radius: 20px;
-  overflow: hidden;
-  position: relative;
-}
-
-.bar {
-  height: 100%;
-  background-color: #61dafb;
-  border-radius: 20px;
-  transition: width 0.8s ease-in-out;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  padding-right: 10px;
-  position: relative;
-}
-
-.bar:hover {
-  background-color: #4CAF50;
-}
-
-.vote-count {
-  color: white;
-  font-weight: bold;
-  font-size: 14px;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  padding: 20px;
+  border: 1px solid rgba(97, 218, 251, 0.3);
 }
 
 .no-results {
@@ -303,25 +242,6 @@
   font-size: 18px;
 }
 
-.results-summary {
-  margin-top: 30px;
-  padding: 20px;
-  background-color: rgba(255, 255, 255, 0.05);
-  border-radius: 8px;
-  border: 1px solid rgba(97, 218, 251, 0.3);
-}
-
-.results-summary h3 {
-  margin: 0 0 15px 0;
-  color: #61dafb;
-  font-size: 20px;
-}
-
-.results-summary p {
-  margin: 8px 0;
-  color: #ccc;
-  font-size: 14px;
-}
 
 .test-button:disabled {
   background-color: #666;

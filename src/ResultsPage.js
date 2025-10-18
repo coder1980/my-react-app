@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import Highcharts from 'highcharts';
+import HighchartsReact from 'highcharts-react-official';
 import { votingService } from './supabase';
 import { votingConfig } from './config';
 
@@ -72,13 +74,73 @@ function ResultsPage({ category }) {
       .filter(([, votes]) => votes > 0);
   };
 
-  const getMaxVotes = () => {
-    const sorted = getSortedResults();
-    return sorted.length > 0 ? sorted[0][1] : 1;
-  };
-
   const sortedResults = getSortedResults();
-  const maxVotes = getMaxVotes();
+
+  // Highcharts configuration
+  const chartOptions = {
+    chart: {
+      type: 'bar',
+      backgroundColor: 'transparent',
+      style: {
+        fontFamily: 'Arial, sans-serif'
+      }
+    },
+    title: {
+      text: null
+    },
+    xAxis: {
+      categories: sortedResults.map(([candidate]) => candidate),
+      title: {
+        text: 'Candidates',
+        style: {
+          color: '#61dafb'
+        }
+      },
+      labels: {
+        style: {
+          color: '#61dafb'
+        }
+      }
+    },
+    yAxis: {
+      title: {
+        text: 'Votes',
+        style: {
+          color: '#61dafb'
+        }
+      },
+      labels: {
+        style: {
+          color: '#61dafb'
+        }
+      },
+      gridLineColor: 'rgba(97, 218, 251, 0.2)'
+    },
+    series: [{
+      name: 'Votes',
+      data: sortedResults.map(([, votes]) => votes),
+      color: '#61dafb',
+      dataLabels: {
+        enabled: true,
+        color: 'white',
+        style: {
+          textOutline: '1px contrast'
+        }
+      }
+    }],
+    legend: {
+      enabled: false
+    },
+    credits: {
+      enabled: false
+    },
+    plotOptions: {
+      bar: {
+        borderRadius: 5,
+        borderWidth: 0
+      }
+    }
+  };
 
   return (
     <div className="App">
@@ -94,48 +156,18 @@ function ResultsPage({ category }) {
               <h2>Loading results...</h2>
             </div>
           ) : (
-            <>
-              <div className="results-header">
-                <h2>Vote Progress: {currentVoteIndex} / {allVotes.length}</h2>
-                {isAnimating && (
-                  <p className="animation-status">🎬 Animating votes...</p>
-                )}
-              </div>
-
-              <div className="bar-chart">
-                {sortedResults.length === 0 ? (
-                  <div className="no-results">
-                    <p>No votes yet for this category</p>
-                  </div>
-                ) : (
-                  sortedResults.map(([candidate, votes]) => (
-                    <div key={candidate} className="bar-item">
-                      <div className="candidate-name">{candidate}</div>
-                      <div className="bar-container">
-                        <div 
-                          className="bar"
-                          style={{
-                            width: `${(votes / maxVotes) * 100}%`,
-                            backgroundColor: votes === maxVotes ? '#4CAF50' : '#61dafb'
-                          }}
-                        >
-                          <span className="vote-count">{votes}</span>
-                        </div>
-                      </div>
-                    </div>
-                  ))
-                )}
-              </div>
-
-              <div className="results-summary">
-                <h3>Summary</h3>
-                <p>Total votes processed: {currentVoteIndex}</p>
-                <p>Candidates with votes: {sortedResults.length}</p>
-                {sortedResults.length > 0 && (
-                  <p>Leading: {sortedResults[0][0]} with {sortedResults[0][1]} votes</p>
-                )}
-              </div>
-            </>
+            <div className="chart-container">
+              {sortedResults.length === 0 ? (
+                <div className="no-results">
+                  <p>No votes yet for this category</p>
+                </div>
+              ) : (
+                <HighchartsReact
+                  highcharts={Highcharts}
+                  options={chartOptions}
+                />
+              )}
+            </div>
           )}
         </div>
         
