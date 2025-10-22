@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { votingService } from './supabase';
 import { getDeviceId, markDeviceAsClicked, getDeviceInfo } from './deviceFingerprint';
 import { votingConfig } from './config';
