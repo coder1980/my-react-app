@@ -151,11 +151,6 @@ function VotingPage() {
           </div>
         </div>
         
-        <div className="navigation-links">
-          <Link to="/barcode" className="nav-link">
-            📱 Get QR Code
-          </Link>
-        </div>
       </header>
     </div>
   );
