@@ -18,6 +18,7 @@ function BackupVotingPage() {
   const [totalVotes, setTotalVotes] = useState(0);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
+  const [isMobile, setIsMobile] = useState(false);
 
   const sortedCandidates = [...votingConfig.candidates].sort((a, b) => a.localeCompare(b));
 
@@ -27,7 +28,24 @@ function BackupVotingPage() {
       setTotalVotes(currentVotes);
     };
 
+    const detectMobile = () => {
+      if (typeof window === 'undefined') {
+        setIsMobile(false);
+        return;
+      }
+
+      const userAgent = navigator.userAgent || navigator.vendor || window.opera || '';
+      const mobileRegex = /android|iphone|ipad|ipod|blackberry|iemobile|opera mini/i;
+      const isMobileDevice = mobileRegex.test(userAgent.toLowerCase());
+      const isSmallScreen = window.innerWidth <= 768;
+      setIsMobile(isMobileDevice || isSmallScreen);
+    };
+
     loadTotals();
+    detectMobile();
+
+    window.addEventListener('resize', detectMobile);
+    return () => window.removeEventListener('resize', detectMobile);
   }, []);
 
   const handleVoteChange = (category, candidate) => {
@@ -75,6 +93,23 @@ function BackupVotingPage() {
       setLoading(false);
     }
   };
+
+  if (isMobile) {
+    return (
+      <div className="App">
+        <header className="App-header">
+          <h1>🛟 Backup Voting Mode</h1>
+          <div className="voting-section">
+            <div className="voting-form">
+              <p className="voted-message" style={{ maxWidth: '600px' }}>
+                This backup voting page is only for laptop use. Please use the main voting link on your phone, or ask an admin to submit a backup vote from a laptop.
+              </p>
+            </div>
+          </div>
+        </header>
+      </div>
+    );
+  }
 
   return (
     <div className="App">
