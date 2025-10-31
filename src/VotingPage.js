@@ -15,7 +15,7 @@ function VotingPage() {
   const [hasVoted, setHasVoted] = useState(false);
   const sortedCandidates = useMemo(() => {
     return [...votingConfig.candidates].sort((a, b) => a.localeCompare(b));
-  }, []);
+  }, [votingConfig.candidates]);
 
   // Load data when component mounts
   useEffect(() => {

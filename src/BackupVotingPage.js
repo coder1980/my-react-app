@@ -21,7 +21,7 @@ function BackupVotingPage() {
 
   const sortedCandidates = useMemo(() => {
     return [...votingConfig.candidates].sort((a, b) => a.localeCompare(b));
-  }, []);
+  }, [votingConfig.candidates]);
 
   useEffect(() => {
     const loadTotals = async () => {
