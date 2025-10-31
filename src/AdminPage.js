@@ -34,6 +34,13 @@ function AdminPage() {
       path: '/funniest',
       description: 'Live results for Funniest category',
       emoji: '😂'
+    },
+    {
+      id: 'backup',
+      title: 'Backup Voting Page',
+      description: 'Manual voting without device tracking — use only for exceptions.',
+      emoji: '🛟',
+      path: '/backup'
     }
   ];
 

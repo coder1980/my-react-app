@@ -1,9 +1,15 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { votingService } from './supabase';
-import { getDeviceId, markDeviceAsClicked, getDeviceInfo } from './deviceFingerprint';
 import { votingConfig } from './config';
 
-function VotingPage() {
+function generateBackupDeviceId() {
+  if (typeof window !== 'undefined' && window.crypto && window.crypto.randomUUID) {
+    return `backup-${window.crypto.randomUUID()}`;
+  }
+  return `backup-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+}
+
+function BackupVotingPage() {
   const [votes, setVotes] = useState({
     best_dressed: '',
     most_creative: '',
@@ -11,51 +17,30 @@ function VotingPage() {
   });
   const [totalVotes, setTotalVotes] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [deviceInfo, setDeviceInfo] = useState(null);
-  const [hasVoted, setHasVoted] = useState(false);
+  const [message, setMessage] = useState('');
+
   const sortedCandidates = useMemo(() => {
     return [...votingConfig.candidates].sort((a, b) => a.localeCompare(b));
   }, []);
 
-  // Load data when component mounts
   useEffect(() => {
-    loadData();
-  }, []);
-
-  const loadData = async () => {
-    try {
-      // Load total votes
+    const loadTotals = async () => {
       const currentVotes = await votingService.getTotalVotes();
       setTotalVotes(currentVotes);
-      
-      // Get device info
-      const device = getDeviceInfo();
-      setDeviceInfo(device);
-      setHasVoted(device.hasClicked); // Reuse the same localStorage key
-      
-      // Check if device has already voted in database
-      const deviceId = getDeviceId();
-      const deviceExists = await votingService.checkDeviceExists(deviceId);
-      
-      if (deviceExists) {
-        setHasVoted(true);
-        markDeviceAsClicked();
-      }
-    } catch (error) {
-      console.error('Error loading data:', error);
-    }
-  };
+    };
+
+    loadTotals();
+  }, []);
 
   const handleVoteChange = (category, candidate) => {
-    // Check if this candidate is already selected in another category
     const otherCategories = Object.keys(votes).filter(cat => cat !== category);
     const isAlreadySelected = otherCategories.some(cat => votes[cat] === candidate);
-    
+
     if (isAlreadySelected && candidate !== '') {
       alert('You cannot vote for the same person in multiple categories!');
       return;
     }
-    
+
     setVotes(prev => ({
       ...prev,
       [category]: candidate
@@ -63,12 +48,6 @@ function VotingPage() {
   };
 
   const handleVote = async () => {
-    if (hasVoted) {
-      alert('You have already voted on this device!');
-      return;
-    }
-
-    // Check if all categories are selected
     const allVoted = Object.values(votes).every(vote => vote !== '');
     if (!allVoted) {
       alert('Please select a candidate for all three categories before voting.');
@@ -76,23 +55,24 @@ function VotingPage() {
     }
 
     setLoading(true);
+    setMessage('');
     try {
-      const deviceId = getDeviceId();
-      const device = getDeviceInfo();
-      
+      const deviceId = generateBackupDeviceId();
       await votingService.recordVote(deviceId, votes, {
-        deviceType: device.deviceType,
-        userAgent: navigator.userAgent
+        deviceType: 'Backup Entry',
+        userAgent: 'Manual backup submission'
       });
-      
-      setTotalVotes(totalVotes + 1);
-      setHasVoted(true);
-      markDeviceAsClicked();
-      
-      alert('Thank you! Your votes have been recorded.');
+
+      setTotalVotes(prev => prev + 1);
+      setVotes({
+        best_dressed: '',
+        most_creative: '',
+        funniest: ''
+      });
+      setMessage('✅ Vote recorded successfully in backup mode.');
     } catch (error) {
-      console.error('Error recording vote:', error);
-      alert('Error recording your vote. Please try again.');
+      console.error('Error recording backup vote:', error);
+      setMessage('❌ Error recording vote. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -101,30 +81,22 @@ function VotingPage() {
   return (
     <div className="App">
       <header className="App-header">
-        <h1>🎃 Costume Contest Voting 🎃</h1>
+        <h1>🛟 Backup Voting Mode</h1>
         <p>
-          Vote for your favorites in each category!
+          Use this page only when someone cannot use the primary voting link.
+          Votes here do not enforce one-per-device restrictions, so please supervise usage.
         </p>
-        
+
         <div className="voting-section">
           <h2>Total Votes: {totalVotes}</h2>
-          
-          {deviceInfo && (
-            <div className="device-info">
-              <p>Your Device: {deviceInfo.deviceType}</p>
-              <p>Status: {hasVoted ? '✅ Already Voted' : '🆕 Ready to Vote'}</p>
-            </div>
-          )}
-
           <div className="voting-form">
             {votingConfig.categories.map(category => (
               <div key={category.id} className="vote-category">
                 <h3>{category.title}</h3>
-                <p className="category-description">{category.description}</p>
                 <select
                   value={votes[category.id]}
                   onChange={(e) => handleVoteChange(category.id, e.target.value)}
-                  disabled={hasVoted}
+                  disabled={loading}
                   className="vote-dropdown"
                 >
                   <option value="">Select a candidate...</option>
@@ -136,26 +108,23 @@ function VotingPage() {
                 </select>
               </div>
             ))}
-            
-            <button 
-              className={`vote-button ${hasVoted ? 'voted' : ''}`}
+
+            <button
+              className="vote-button"
               onClick={handleVote}
-              disabled={loading || hasVoted}
+              disabled={loading}
             >
-              {loading ? 'Submitting...' : hasVoted ? 'Already Voted' : 'Submit Votes'}
+              {loading ? 'Submitting...' : 'Submit Backup Vote'}
             </button>
-            
-            {hasVoted && (
-              <p className="voted-message">
-                Thank you! Your votes have been recorded. You can only vote once per device.
-              </p>
+
+            {message && (
+              <p className="voted-message">{message}</p>
             )}
           </div>
         </div>
-        
       </header>
     </div>
   );
 }
 
-export default VotingPage;
+export default BackupVotingPage;
