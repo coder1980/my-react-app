@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { votingService } from './supabase';
 import { getDeviceId, markDeviceAsClicked, getDeviceInfo } from './deviceFingerprint';
 import { votingConfig } from './config';
@@ -13,9 +13,7 @@ function VotingPage() {
   const [loading, setLoading] = useState(false);
   const [deviceInfo, setDeviceInfo] = useState(null);
   const [hasVoted, setHasVoted] = useState(false);
-  const sortedCandidates = useMemo(() => {
-    return [...votingConfig.candidates].sort((a, b) => a.localeCompare(b));
-  }, [votingConfig.candidates]);
+  const sortedCandidates = [...votingConfig.candidates].sort((a, b) => a.localeCompare(b));
 
   // Load data when component mounts
   useEffect(() => {

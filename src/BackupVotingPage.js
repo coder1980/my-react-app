@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { votingService } from './supabase';
 import { votingConfig } from './config';
 
@@ -19,9 +19,7 @@ function BackupVotingPage() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
 
-  const sortedCandidates = useMemo(() => {
-    return [...votingConfig.candidates].sort((a, b) => a.localeCompare(b));
-  }, [votingConfig.candidates]);
+  const sortedCandidates = [...votingConfig.candidates].sort((a, b) => a.localeCompare(b));
 
   useEffect(() => {
     const loadTotals = async () => {
