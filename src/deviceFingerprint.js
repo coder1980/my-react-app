@@ -1,97 +1,92 @@
-// Device fingerprinting for mobile devices
-// Creates a unique identifier for each device
+// Device fingerprinting utilities
+// Generates a deterministic identifier for a physical device without relying on localStorage
 
-export const generateDeviceFingerprint = () => {
-  // Get device information
-  const canvas = document.createElement('canvas');
-  const ctx = canvas.getContext('2d');
-  ctx.textBaseline = 'top';
-  ctx.font = '14px Arial';
-  ctx.fillText('Device fingerprint', 2, 2);
-  
-  // Collect device characteristics
-  const fingerprint = {
-    // Screen information
-    screenWidth: window.screen.width,
-    screenHeight: window.screen.height,
-    screenColorDepth: window.screen.colorDepth,
-    screenPixelDepth: window.screen.pixelDepth,
-    
-    // Browser information
-    userAgent: navigator.userAgent,
-    language: navigator.language,
-    platform: navigator.platform,
-    
-    // Timezone
-    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-    timezoneOffset: new Date().getTimezoneOffset(),
-    
-    // Canvas fingerprint
-    canvasFingerprint: canvas.toDataURL(),
-    
-    // Touch support
-    touchSupport: 'ontouchstart' in window,
-    maxTouchPoints: navigator.maxTouchPoints || 0,
-    
-    // Hardware concurrency
-    hardwareConcurrency: navigator.hardwareConcurrency || 0,
-    
-    // Device memory (if available)
-    deviceMemory: navigator.deviceMemory || 0,
-    
-    // Connection information
-    connectionType: navigator.connection?.effectiveType || 'unknown',
-    
-    // Timestamp for uniqueness
-    timestamp: Date.now()
-  };
-  
-  // Create a hash from the fingerprint
-  const fingerprintString = JSON.stringify(fingerprint);
-  return btoa(fingerprintString).replace(/[^a-zA-Z0-9]/g, '').substring(0, 32);
+const encodeForHash = (value) => {
+  if (value === null || value === undefined) return '';
+  if (typeof value === 'number' && !Number.isFinite(value)) return '';
+  return String(value).toLowerCase();
 };
 
-// Get or create device ID
-export const getDeviceId = () => {
-  let deviceId = localStorage.getItem('deviceId');
-  
-  if (!deviceId) {
-    deviceId = generateDeviceFingerprint();
-    localStorage.setItem('deviceId', deviceId);
+const normalizeNumber = (value, precision = 4) => {
+  if (value === null || value === undefined) return 0;
+  return Number(Number(value).toFixed(precision));
+};
+
+const createStableComponentList = () => {
+  if (typeof window === 'undefined') {
+    return [];
   }
-  
-  return deviceId;
+
+  const screen = window.screen || {};
+  const navigatorRef = window.navigator || {};
+  const intlOptions = (typeof Intl !== 'undefined' && Intl.DateTimeFormat)
+    ? Intl.DateTimeFormat().resolvedOptions() || {}
+    : {};
+
+  const components = [
+    // Hardware / OS characteristics
+    encodeForHash(navigatorRef.platform),
+    encodeForHash(navigatorRef.language),
+    encodeForHash(navigatorRef.languages && navigatorRef.languages.join('-')),
+    encodeForHash(navigatorRef.hardwareConcurrency || 0),
+    encodeForHash(navigatorRef.deviceMemory || 0),
+    encodeForHash(navigatorRef.maxTouchPoints || 0),
+    // Screen characteristics (rounded for stability)
+    encodeForHash(screen.width || 0),
+    encodeForHash(screen.height || 0),
+    encodeForHash(screen.availWidth || 0),
+    encodeForHash(screen.availHeight || 0),
+    encodeForHash(screen.colorDepth || 0),
+    encodeForHash(screen.pixelDepth || 0),
+    encodeForHash(normalizeNumber(window.devicePixelRatio || 1, 3)),
+    // Timezone / locale
+    encodeForHash(intlOptions.timeZone || ''),
+    encodeForHash(intlOptions.locale || ''),
+    encodeForHash(new Date().getTimezoneOffset()),
+    // Connection information (optional but stable per device)
+    encodeForHash(navigatorRef.connection?.effectiveType || ''),
+    encodeForHash(navigatorRef.connection?.downlink || 0),
+    encodeForHash(navigatorRef.connection?.rtt || 0)
+  ];
+
+  return components;
 };
 
-// Check if device has already clicked
-export const hasDeviceClicked = () => {
-  return localStorage.getItem('hasClicked') === 'true';
+const hashComponents = (components) => {
+  const data = components.join('|');
+  let hash = 0;
+  for (let i = 0; i < data.length; i += 1) {
+    hash = (hash << 5) - hash + data.charCodeAt(i);
+    hash |= 0; // Convert to 32-bit integer
+  }
+  return `device_${Math.abs(hash).toString(36)}`;
 };
 
-// Mark device as having clicked
-export const markDeviceAsClicked = () => {
-  localStorage.setItem('hasClicked', 'true');
+export const getDeviceId = () => {
+  const components = createStableComponentList();
+  if (!components.length) {
+    return 'device_unknown';
+  }
+  return hashComponents(components);
 };
 
-// Get device info for display
 export const getDeviceInfo = () => {
+  const userAgent = (typeof navigator !== 'undefined' ? navigator.userAgent : '') || '';
   const deviceId = getDeviceId();
-  const userAgent = navigator.userAgent;
-  
-  // Detect mobile device
   const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
-  
-  // Get device type
+
   let deviceType = 'Desktop';
   if (/iPhone/i.test(userAgent)) deviceType = 'iPhone';
   else if (/iPad/i.test(userAgent)) deviceType = 'iPad';
   else if (/Android/i.test(userAgent)) deviceType = 'Android';
   else if (/Windows Phone/i.test(userAgent)) deviceType = 'Windows Phone';
-  
+  else if (/Macintosh|MacIntel|MacPPC|Mac68K/i.test(userAgent)) deviceType = 'Mac';
+  else if (/Windows NT/i.test(userAgent)) deviceType = 'Windows PC';
+
   return {
-    deviceId: deviceId.substring(0, 8) + '...', // Show only first 8 chars
+    deviceId,
     deviceType,
     isMobile,
-    hasClicked: hasDeviceClicked()
+    userAgent
   };
 };

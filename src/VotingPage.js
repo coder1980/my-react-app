@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { votingService } from './supabase';
-import { getDeviceId, markDeviceAsClicked, getDeviceInfo } from './deviceFingerprint';
+import { getDeviceInfo } from './deviceFingerprint';
 import { votingConfig } from './config';
 
 function VotingPage() {
@@ -29,15 +29,13 @@ function VotingPage() {
       // Get device info
       const device = getDeviceInfo();
       setDeviceInfo(device);
-      setHasVoted(device.hasClicked); // Reuse the same localStorage key
       
       // Check if device has already voted in database
-      const deviceId = getDeviceId();
+      const deviceId = device.deviceId;
       const deviceExists = await votingService.checkDeviceExists(deviceId);
       
       if (deviceExists) {
         setHasVoted(true);
-        markDeviceAsClicked();
       }
     } catch (error) {
       console.error('Error loading data:', error);
@@ -75,17 +73,25 @@ function VotingPage() {
 
     setLoading(true);
     try {
-      const deviceId = getDeviceId();
       const device = getDeviceInfo();
+      const deviceId = device.deviceId;
+
+      // Double-check before recording the vote in case state is stale
+      const existing = await votingService.checkDeviceExists(deviceId);
+      if (existing) {
+        setHasVoted(true);
+        alert('You have already voted on this device!');
+        setLoading(false);
+        return;
+      }
       
       await votingService.recordVote(deviceId, votes, {
         deviceType: device.deviceType,
-        userAgent: navigator.userAgent
+        userAgent: device.userAgent
       });
       
       setTotalVotes(totalVotes + 1);
       setHasVoted(true);
-      markDeviceAsClicked();
       
       alert('Thank you! Your votes have been recorded.');
     } catch (error) {
