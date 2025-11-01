@@ -11,7 +11,6 @@ export const votingConfig = {
     "Medhavi",
     "Shruti",
     "Sanjay",
-    "Amit",
     "Sushmita",
     "Kripa",
     "Tanu",
@@ -19,7 +18,11 @@ export const votingConfig = {
     "Keyur",
     "Neha",
     "Subhash",
-    "Rupa"
+    "Rupa",
+    "Chandan",
+    "Karishma",
+    "Pankaj",
+    "Deepti"
   ],
   
   categories: [
